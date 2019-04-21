@@ -72,6 +72,7 @@ HaxeRtMidi_ExternInput::HaxeRtMidi_ExternInput(int _id, string _api)
         isVirtualBool = false;
         id = _id;
         midi->openPort(_id);
+        midi->ignoreTypes(false);
         error = "null";
     }
     catch (RtMidiError &e)
@@ -96,6 +97,7 @@ HaxeRtMidi_ExternInput::HaxeRtMidi_ExternInput(string _name, string _api)
         isVirtualBool = true;
         name = _name;
         midi->openVirtualPort(_name);
+        midi->ignoreTypes(false);
         error = "null";
     }
     catch (RtMidiError &e)
