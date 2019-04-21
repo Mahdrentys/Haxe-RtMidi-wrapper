@@ -18,13 +18,20 @@ void HaxeRtMidi_ExternOutput::setApi(string _api)
         delete staticMidi;
     }
 
-    if (_api == "alsa")
+    try
     {
-        staticMidi = new RtMidiOut(RtMidi::LINUX_ALSA);
+        if (_api == "alsa")
+        {
+            staticMidi = new RtMidiOut(RtMidi::LINUX_ALSA);
+        }
+        else if (_api == "jack")
+        {
+            staticMidi = new RtMidiOut(RtMidi::UNIX_JACK);
+        }
     }
-    else if (_api == "jack")
+    catch (RtMidiError &e)
     {
-        staticMidi = new RtMidiOut(RtMidi::UNIX_JACK);
+        staticError = e.getMessage();
     }
 
     api = _api;
@@ -51,36 +58,50 @@ int HaxeRtMidi_ExternOutput::create(string name)
 
 HaxeRtMidi_ExternOutput::HaxeRtMidi_ExternOutput(int _id, string _api)
 {
-    if (_api == "alsa")
+    try
     {
-        midi = new RtMidiOut(RtMidi::LINUX_ALSA);
-    }
-    else if (_api == "jack")
-    {
-        midi = new RtMidiOut(RtMidi::UNIX_JACK);
-    }
+        if (_api == "alsa")
+        {
+            midi = new RtMidiOut(RtMidi::LINUX_ALSA);
+        }
+        else if (_api == "jack")
+        {
+            midi = new RtMidiOut(RtMidi::UNIX_JACK);
+        }
 
-    isVirtualBool = false;
-    id = _id;
-    midi->openPort(_id);
-    error = "null";
+        isVirtualBool = false;
+        id = _id;
+        midi->openPort(_id);
+        error = "null";
+    }
+    catch (RtMidiError &e)
+    {
+        error = e.getMessage();
+    }
 }
 
 HaxeRtMidi_ExternOutput::HaxeRtMidi_ExternOutput(string _name, string _api)
 {
-    if (_api == "alsa")
+    try
     {
-        midi = new RtMidiOut(RtMidi::LINUX_ALSA);
-    }
-    else if (_api == "jack")
-    {
-        midi = new RtMidiOut(RtMidi::UNIX_JACK);
-    }
+        if (_api == "alsa")
+        {
+            midi = new RtMidiOut(RtMidi::LINUX_ALSA);
+        }
+        else if (_api == "jack")
+        {
+            midi = new RtMidiOut(RtMidi::UNIX_JACK);
+        }
 
-    isVirtualBool = true;
-    name = _name;
-    midi->openVirtualPort(_name);
-    error = "null";
+        isVirtualBool = true;
+        name = _name;
+        midi->openVirtualPort(_name);
+        error = "null";
+    }
+    catch (RtMidiError &e)
+    {
+        error = e.getMessage();
+    }
 }
 
 int HaxeRtMidi_ExternOutput::isVirtual()
@@ -122,8 +143,15 @@ void HaxeRtMidi_ExternOutput::instanceSendMessageByte(int instance, int byte)
 
 void HaxeRtMidi_ExternOutput::sendMessage()
 {
-    midi->sendMessage(&message);
-    message.clear();
+    try
+    {
+        midi->sendMessage(&message);
+        message.clear();
+    }
+    catch (RtMidiError &e)
+    {
+        error = e.getMessage();
+    }
 }
 
 void HaxeRtMidi_ExternOutput::instanceSendMessage(int instance)
@@ -133,8 +161,15 @@ void HaxeRtMidi_ExternOutput::instanceSendMessage(int instance)
 
 void HaxeRtMidi_ExternOutput::close()
 {
-    midi->closePort();
-    delete midi;
+    try
+    {
+        midi->closePort();
+        delete midi;
+    }
+    catch (RtMidiError &e)
+    {
+        error = e.getMessage();
+    }
 }
 
 void HaxeRtMidi_ExternOutput::instanceClose(int instance)

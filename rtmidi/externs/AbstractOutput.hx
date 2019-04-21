@@ -6,9 +6,35 @@ import cpp.StdStringRef;
 
 class AbstractOutput
 {
+    private static function checkForErrors(instance:Null<Int> = null):Void
+    {
+        var stdStaticError:StdStringRef = ExternInput.getStaticError();
+        var staticError:String = stdStaticError.toString();
+
+        if (staticError != "null")
+        {
+            ExternInput.resetStaticError();
+            throw staticError;
+        }
+
+        if (instance != null)
+        {
+            var externInstance:Int32 = instance;
+            var stdError:StdStringRef = ExternInput.getError(instance);
+            var error:String = stdError.toString();
+
+            if (error != "null")
+            {
+                ExternInput.resetError(instance);
+                throw error;
+            }
+        }
+    }
+
     inline public static function setApi(api:String):Void
     {
         ExternOutput.setApi(StdString.ofString(api));
+        checkForErrors();
     }
 
     public static function count():Int
@@ -21,24 +47,15 @@ class AbstractOutput
     {
         var externId:Int32 = id;
         var i:Int = ExternOutput.get(externId);
+        checkForErrors(i);
         return i;
     }
 
     public static function create(name:String):Int
     {
         var i:Int = ExternOutput.create(StdString.ofString(name));
+        checkForErrors(i);
         return i;
-    }
-
-    public static function getStaticError():String
-    {
-        var error:StdStringRef = ExternOutput.getStaticError();
-        return error.toString();
-    }
-
-    inline public static function resetStaticError():Void
-    {
-        ExternOutput.resetStaticError();
     }
 
     public static function isVirtual(instance:Int):Bool
@@ -66,24 +83,13 @@ class AbstractOutput
     {
         var externInstance:Int32 = instance;
         ExternOutput.sendMessage(externInstance);
+        checkForErrors(instance);
     }
 
     static public function close(instance:Int):Void
     {
         var externInstance:Int32 = instance;
         ExternOutput.close(externInstance);
-    }
-
-    static public function getError(instance:Int):String
-    {
-        var externInstance:Int32 = instance;
-        var error:StdStringRef = ExternOutput.getError(externInstance);
-        return error.toString();
-    }
-
-    static public function resetError(instance:Int):Void
-    {
-        var externInstance:Int32 = instance;
-        ExternOutput.resetError(externInstance);
+        checkForErrors(instance);
     }
 }
