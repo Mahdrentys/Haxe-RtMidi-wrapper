@@ -8,24 +8,24 @@ class AbstractOutput
 {
     private static function checkForErrors(instance:Null<Int> = null):Void
     {
-        var stdStaticError:StdStringRef = ExternInput.getStaticError();
+        var stdStaticError:StdStringRef = ExternOutput.getStaticError();
         var staticError:String = stdStaticError.toString();
 
         if (staticError != "null")
         {
-            ExternInput.resetStaticError();
+            ExternOutput.resetStaticError();
             throw staticError;
         }
 
         if (instance != null)
         {
             var externInstance:Int32 = instance;
-            var stdError:StdStringRef = ExternInput.getError(instance);
+            var stdError:StdStringRef = ExternOutput.getError(instance);
             var error:String = stdError.toString();
 
             if (error != "null")
             {
-                ExternInput.resetError(instance);
+                ExternOutput.resetError(instance);
                 throw error;
             }
         }
