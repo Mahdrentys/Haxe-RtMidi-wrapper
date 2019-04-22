@@ -86,6 +86,7 @@ class InputStream
             {
                 try
                 {
+                    Sys.sleep(0.001);
                     var size = AbstractInput.getMessageSize(instance);
                     
                     if (size > 0)
