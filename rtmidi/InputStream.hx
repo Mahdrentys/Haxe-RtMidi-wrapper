@@ -6,8 +6,8 @@ import cpp.vm.Thread;
 
 class InputStream
 {
-    static private var _api:Api;
-    static public var api(get, set):Api;
+    private static var _api:Api;
+    public static var api(get, set):Api;
 
     private var instance:Int;
     private var thread:Null<Thread> = null;
@@ -63,6 +63,16 @@ class InputStream
         callbacks.push(callback);
     }
 
+    public function resetListeners():Void
+    {
+        callbacks = [];
+    }
+
+    dynamic public function errorHandler(e:Dynamic):Void
+    {
+        throw e;
+    }
+
     public function listen():Void
     {
         if (thread != null)
@@ -74,30 +84,44 @@ class InputStream
         {
             while (true)
             {
-                var size = AbstractInput.getMessageSize(instance);
-                
-                if (size > 0)
+                try
                 {
-                    var message:Array<Int> = [];
-
-                    for (i in 0...size)
+                    var size = AbstractInput.getMessageSize(instance);
+                    
+                    if (size > 0)
                     {
-                        message.push(AbstractInput.getMessageByte(instance, i));
+                        var message:Array<Int> = [];
+
+                        for (i in 0...size)
+                        {
+                            message.push(AbstractInput.getMessageByte(instance, i));
+                        }
+
+                        for (callback in callbacks)
+                        {
+                            callback(message);
+                        }
                     }
 
-                    for (callback in callbacks)
+                    if (Thread.readMessage(false) == "stop")
                     {
-                        callback(message);
+                        break;
                     }
                 }
-
-                if (Thread.readMessage(false) == "stop")
+                catch (e:Dynamic)
                 {
-                    break;
+                    errorHandler(e);
                 }
             }
 
-            AbstractInput.close(instance);
+            try
+            {
+                AbstractInput.close(instance);
+            }
+            catch (e:Dynamic)
+            {
+                errorHandler(e);
+            }
         });
     }
 

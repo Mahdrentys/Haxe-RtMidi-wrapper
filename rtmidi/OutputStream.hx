@@ -6,8 +6,8 @@ import cpp.vm.Thread;
 
 class OutputStream
 {
-    static private var _api:Api;
-    static public var api(get, set):Api;
+    private static var _api:Api;
+    public static var api(get, set):Api;
 
     private var instance:Int;
     public var id(default, null):Null<Int>;
