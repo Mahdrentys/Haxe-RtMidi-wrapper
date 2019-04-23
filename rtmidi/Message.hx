@@ -8,6 +8,7 @@ import haxe.ds.Either;
 class Message
 {
     public var type:MessageType;
+    public var code:Null<Int> = null;
     public var channel:Int;
     public var data:Null<Array<Int>> = null;
 
@@ -55,6 +56,13 @@ class Message
             var status = Codes.getStatus(rawMessage[0]);
             message = Type.createEmptyInstance(Message);
             message.type = status.type;
+
+            switch (message.type)
+            {
+                case MessageType.Code(code): message.code = code;
+                case _:
+            }
+
             message.channel = status.channel;
             message.data = rawMessage;
             message.data.shift();
@@ -277,6 +285,7 @@ class ProgramChangeMessage extends Message
 class ControlChangeMessage extends Message
 {
     public var control:Control;
+    public var cc:Null<Int> = null;
     public var value:Float;
 
     public function new(_control:Control, _value:Float, _channel:Int = 0)
@@ -285,8 +294,10 @@ class ControlChangeMessage extends Message
 
         switch (_control)
         {
-            case Control.Code(code):
-                if (code < 0 || code > 127)
+            case Control.Code(_code):
+                cc = _code;
+                
+                if (_code < 0 || _code > 127)
                 {
                     throw "RtMidi: Midi cc control numbers must be between 0 and 127!";
                 }
@@ -312,6 +323,7 @@ class ControlChangeMessage extends Message
         }
 
         var control = Codes.getControl(message[1]);
+        
         return new ControlChangeMessage(control != null ? control : Control.Code(message[1]), message[2] / 127, status.channel);
     }
 
