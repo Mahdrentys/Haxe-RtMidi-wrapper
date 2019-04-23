@@ -73,7 +73,20 @@ class Message
 
     public function toRaw():Array<Int>
     {
-        return [];
+        if (code == null || data == null)
+        {
+            throw "RtMidi: invalid midi message!";
+            return [];
+        }
+
+        var rawMessage:Array<Int> = [code + channel];
+
+        for (byte in data)
+        {
+            rawMessage.push(byte);
+        }
+
+        return rawMessage;
     }
 }
 
