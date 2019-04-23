@@ -37,7 +37,7 @@ class Message
 
     public static function fromRaw(rawMessage:Array<Int>):Message
     {
-        var messageClasses:Array<Class<Message>> = [NoteOnMessage, NoteOffMessage, PitchBendMessage, ProgramChangeMessage, ControlChangeMessage];
+        var messageClasses:Array<Class<Message>> = [NoteOnMessage, NoteOffMessage, PitchBendMessage, MonoAftertouchMessage, PolyAftertouchMessage, ProgramChangeMessage, ControlChangeMessage];
         var message:Message = Type.createEmptyInstance(Message);
 
         for (messageClass in messageClasses)
@@ -175,6 +175,71 @@ class PitchBendMessage extends Message
         var msb = Std.int(value127);
         var lsb = Std.int((value127 - msb) * 127);
         return [Codes.types.get("PitchBend") + channel, lsb, msb];
+    }
+}
+
+class MonoAftertouchMessage extends Message
+{
+    public var value:Float;
+
+    public function new(_value:Float, _channel:Int = 0)
+    {
+        type = MessageType.MonoAftertouch;
+        checkFloat(_value);
+        checkChannel(_channel);
+        value = _value;
+        channel = _channel;
+    }
+
+    public static function fromRaw(message:Array<Int>):MonoAftertouchMessage
+    {
+        var status = Codes.getStatus(message[0]);
+
+        if (!Type.enumEq(status.type, MessageType.MonoAftertouch))
+        {
+            return null;
+        }
+        
+        return new MonoAftertouchMessage(message[1] / 127, status.channel);
+    }
+
+    override public function toRaw():Array<Int>
+    {
+        return [Codes.types.get("MonoAftertouch") + channel, Std.int(value * 127)];
+    }
+}
+
+class PolyAftertouchMessage extends Message
+{
+    public var note:Int;
+    public var value:Float;
+
+    public function new(_note:Int, _value:Float, _channel:Int = 0)
+    {
+        type = MessageType.PolyAftertouch;
+        checkInt(_note);
+        checkFloat(_value);
+        checkChannel(_channel);
+        note = _note;
+        value = _value;
+        channel = _channel;
+    }
+
+    public static function fromRaw(message:Array<Int>):PolyAftertouchMessage
+    {
+        var status = Codes.getStatus(message[0]);
+
+        if (!Type.enumEq(status.type, MessageType.PolyAftertouch))
+        {
+            return null;
+        }
+        
+        return new PolyAftertouchMessage(message[1], message[2] / 127, status.channel);
+    }
+
+    override public function toRaw():Array<Int>
+    {
+        return [Codes.types.get("MonoAftertouch") + channel, note, Std.int(value * 127)];
     }
 }
 

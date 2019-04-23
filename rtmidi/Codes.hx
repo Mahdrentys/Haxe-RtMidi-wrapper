@@ -7,6 +7,8 @@ enum MessageType
     NoteOn;
     NoteOff;
     PitchBend;
+    MonoAftertouch;
+    PolyAftertouch;
     ProgramChange;
     ControlChange;
     Code(code:Int);
@@ -40,6 +42,8 @@ class Codes
         "NoteOn" => 144,
         "NoteOff" => 128,
         "PitchBend" => 224,
+        "MonoAftertouch" => 208,
+        "PolyAftertouch" => 160,
         "ProgramChange" => 192,
         "ControlChange" => 176
     ];
