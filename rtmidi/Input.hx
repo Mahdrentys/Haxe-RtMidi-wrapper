@@ -36,6 +36,19 @@ class Input
         return AbstractInput.count();
     }
 
+    public static function all():Array<Input>
+    {
+        var inputs:Array<Input> = [];
+        var count = count();
+
+        for (id in 0...count)
+        {
+            inputs.push(get(id));
+        }
+
+        return inputs;
+    }
+
     public static function get(id:Int):Input
     {
         var inputStream = new InputStream({virtual: false, id: id});

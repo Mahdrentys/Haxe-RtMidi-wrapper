@@ -42,6 +42,9 @@ class Main
         deviceId = virtualInput.id;
         deviceName = virtualInput.name; // "input name"
 
+        // Get all midi input devices
+        var inputs:Array<Input> = Input.all();
+
         // Listen for midi events
         input.listen();
 
@@ -198,6 +201,9 @@ class Main
         isDeviceVirtual = virtualOutput.virtual; // true
         deviceId = virtualOutput.id;
         deviceName = virtualOutput.name; // "output name"
+
+        // Get all midi output devices
+        var outputs:Array<Output> = Output.all();
 
         // You can send midi messages like this:
         var note:Int = 60; // from 0 to 127 in semitones (the center C (aka Do) is 60)

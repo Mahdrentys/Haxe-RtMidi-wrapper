@@ -34,6 +34,19 @@ class Output
         return AbstractOutput.count();
     }
 
+    public static function all():Array<Output>
+    {
+        var outputs:Array<Output> = [];
+        var count = count();
+
+        for (id in 0...count)
+        {
+            outputs.push(get(id));
+        }
+
+        return outputs;
+    }
+
     public static function get(id:Int):Output
     {
         var outputStream = new OutputStream({virtual: false, id: id});
