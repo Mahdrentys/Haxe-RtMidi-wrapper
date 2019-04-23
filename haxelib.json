@@ -1,0 +1,15 @@
+{
+    "name": "rtmidi-wrapper",
+    "url" : "https://github.com/Mahdrentys/Haxe-RtMidi-wrapper",
+    "license": "MIT",
+    "tags": ["rtmidi", "midi", "real-time", "events", "keyboard"],
+    "description": "Haxe c++ RtMidi high-level wrapper for real time midi events.",
+    "version": "1.0.0",
+    "classPath": "",
+    "releasenote": "",
+    "contributors": ["Mahdrentys"],
+    "dependencies":
+    {
+        "hxcpp": ""
+    }
+}
