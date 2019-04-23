@@ -22,7 +22,6 @@ class Main
         Input.api = Api.Alsa; // The standard audio and midi api on Linux
         // Or:
         Input.api = Api.Jack; // The professional audio and midi api on Linux
-        // The default used api is Alsa
 
         // Get the number of midi input devices
         var inputDevicesNumber:Int = Input.count();
@@ -180,7 +179,6 @@ class Main
         Output.api = Api.Alsa; // The standard audio and midi api on Linux
         // Or:
         Output.api = Api.Jack; // The professional audio and midi api on Linux
-        // The default used api is Alsa
 
         // Get the number of midi output devices
         var outputDevicesNumber:Int = Output.count();
